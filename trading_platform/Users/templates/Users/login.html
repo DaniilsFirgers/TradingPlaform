@@ -1,0 +1,17 @@
+{% extends "stocks/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container form">
+    <h1 class="login-align-center">Login</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ login_form|crispy }}
+        <button class="btn btn-primary" type="submit">Login</button>
+    </form>
+    <p class="text-center">Don't have an account?<a href="{% url 'register' %}">Create an account</a>.</p>
+
+</div>
+
+{% endblock content %}

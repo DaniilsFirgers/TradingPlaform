@@ -1,0 +1,91 @@
+{% extends "stocks/base.html" %}
+{% block content %}
+  <div class="user-account">
+    <h1>Portfolio of: {{view.kwargs.username}}</h1>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="total-invested">
+          {% if total is none %}
+            <h3>Invested in total: 0$</h3>
+          {% else %}
+            <h3>Invested in total: {{total}}$</h3>
+          {% endif %}
+
+        </div>
+        <div>
+          <h3>Number of shares in companies</h3>
+        </div>
+        <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Ticker</th>
+            <th scope="col">Number of shares</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for amount in total_shares_per_equity %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ amount.symbol }}</td>
+            <td>{{amount.number_shares|floatformat:2}}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      <div>
+        <h3>Amount invested in companies </h3>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Ticker</th>
+            <th scope="col">Amount invested</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for amount in amount_invested_per_equity %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ amount.symbol }}</td>
+            <td>{{amount.total}}$</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      <div class="col-md-6 positions">
+        <div>
+          <h3>Individual positions</h3>
+        </div>
+        <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Ticker</th>
+            <th scope="col">Amount invested</th>
+            <th scope="col">Equity price</th>
+            <th scope="col">Number of shares</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for position in positions %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ position.symbol }}</td>
+            <td>{{ position.amount_invested }}$</td>
+            <td>{{ position.price }}$</td>
+            <td>{{ position.shares }}</td>
+            <td><a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'delete-position' username=position.user pk=position.id %}">Delete</a></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

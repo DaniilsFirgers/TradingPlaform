@@ -1,0 +1,43 @@
+{% extends "stocks/base.html" %}
+{% load static %}
+{% block content %}
+<div class="search-table">
+   <div class="search-message">
+       <h3>{{message}}</h3>
+   </div>
+   {% if json %}
+   <div class="search-result-table">
+   <table class="table table-striped table-hover table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Ticker</th>
+          <th scope="col">Company Name</th>
+          <th scope="col">Region</th>
+          <th scope="col">Stock price $ (<a href="https://iexcloud.io">IEX Cloud</a>)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for match in matches %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          {% if not match.Price == "-" %}
+          <td><a href="{% url 'searched_stock' ticker=match.Symbol %}" >{{ match.Symbol }}</a></td>
+          {% else %}
+          <td>{{ match.Symbol }}</td>
+          {% endif %}
+          <td>{{ match.Name }}</td>
+          <td>{{ match.Region }}</td>
+          <td>{{ match.Price }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+        <div class="error-img">
+            <img src="{% static 'stocks/404_error.png' %}" class="img-responsive">
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

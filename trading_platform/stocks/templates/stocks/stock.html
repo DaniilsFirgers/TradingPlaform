@@ -1,0 +1,102 @@
+{% extends "stocks/base.html" %}
+{% block content %}
+<div class="container">
+  <div class="row d-flex price-info">
+    <div class="col-4">
+      <h2>{{summary.Ticker}}</h2>
+      <h1 class="mt-auto mb-0">{{ summary.Last_Price}} <a href="https://iexcloud.io"> (IEX Cloud) </a></h1>
+    </div>
+    <div class="col-8 d-flex price-change-div">
+      {% if summary.Day_Change_prc > 0 %}
+        <h2 class="price-increase mt-auto mb-0">+{{ summary.Day_Change}} (+{{ summary.Day_Change_prc}}%)</h2>
+      {% else %}
+        <h2 class="price-decrease mt-auto mb-0">{{ summary.Day_Change}} ({{ summary.Day_Change_prc}}%)</h2>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <td>Previous Close</td>
+            <td>{{ summary.PreviousDayClose }}</td>
+          </tr>
+          <tr>
+            <td>Average Total Volume</td>
+            <td>{{ summary.AverageTotalVolume }}</td>
+          </tr>
+          <tr>
+            <td>52 Week Range</td>
+            <td>{{ summary.Week52Low }} - {{ summary.Week52High }}</td>
+          </tr>
+          <tr>
+            <td>Average Volume</td>
+            <td>{{ summary.AverageTotalVolume }}</td>
+          </tr>
+          <tr>
+            <td>Day's Change</td>
+            <td>{{ summary.Day_Change }}</td>
+          </tr>
+          <tr>
+            <td>Day's Change, %</td>
+            <td>{{ summary.Day_Change_prc }}</td>
+          </tr>
+          <tr>
+            <td>Market Cap</td>
+            <td>{{ summary.MarketCap }}</td>
+          </tr>
+          <tr>
+            <td>PE Ratio</td>
+            <td>{{ summary.PeRatio }}</td>
+          </tr>
+        </tbody>
+      </table>
+    <div class="add-button">
+      {% if user.is_authenticated %}
+      <a role="button" class="btn btn-warning btn-lg" href="{% url 'create_position' ticker=summary.Ticker price=summary.Last_Price%}">Add To Portfolio</a>
+      {% else %}
+      <a role="button" class="btn btn-warning btn-lg" href="{% url 'login' %}">Add To Portfolio</a>
+      {% endif %}
+    </div>
+    </div>
+    <div class="col-md-6">
+        {% if chart %}
+          <img src="data:image/png;base64, {{ chart|safe }}" class="img-fluid">
+        {% endif %}
+      </div>
+  </div>
+</div>
+
+
+<div class="news-cards">
+  <div class="news-about">
+    <h3>Latest news articles about {{summary.Ticker}}</h3>
+  </div>
+  {% if articles %}
+    {% for article in articles %}
+    <div class="card bg-light border-secondary news-card">
+      <div class="card-header">
+        <h5 class="card-title">{{ article.headline }}</h5>
+      </div>
+      <div class="card-body">
+        {% if not article.summary %}
+          <p class="card-text">No summary available</p>
+          <a href="https://{{article.url}}" class="card-link">Link to the article</a>
+        {% else %}
+          <p class="card-text">{{ article.summary }}</p>
+        <a href="{{article.url}}" class="card-link">Link to the article</a>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+  {% else %}
+    <div>
+      <p>No articles for {{ summary.Ticker }}</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
